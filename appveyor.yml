@@ -55,7 +55,7 @@ build_script:
   - cmake .. -G"Visual Studio 12 Win64" -DSIMBODY_HOME=C:\simbody # TODO -DBUILD_JAVA_WRAPPING=ON -DBUILD_PYTHON_WRAPPING=ON -DSWIG_EXECUTABLE=C:\swigwin-3.0.2\swig.exe # TODO -DBUILD_SIMM_TRANSLATOR=ON
   
   # Build doxygen so we can see any doxygen warnings.
-  - cmake --build . --target doxygen -- config Release --use-stderr
+  - cmake --build . --target doxygen --config Release --use-stderr
   
   # Build.
   - MSBuild OpenSim.sln /target:ALL_BUILD /p:Configuration=Release /maxcpucount:4 /verbosity:quiet
