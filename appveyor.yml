@@ -34,6 +34,9 @@ install:
   #- jar xf swigwin-3.0.2.zip
   #- mv swigwin-3.0.2 C:\
   
+  # Use Chocolatey to install doxygen.
+  - cinst doxygen.install
+  
   ## Simbody.
   # Simbody's installation is pushed to our Appveyor NuGet account feed.
   # Must use version 0.0.0, otherwise, nuget will use nuget.org, where
@@ -54,4 +57,8 @@ build_script:
   - MSBuild OpenSim.sln /target:ALL_BUILD /p:Configuration=Release /maxcpucount:4 /verbosity:quiet
 
 test_script:
+  # Run tests.
   - ctest --parallel 4 --build-config Release --output-on-failure
+  
+  # Build doxygen so we can see any doxygen warnings.
+  - MSBuild OpenSim.sln /target:doxygen
