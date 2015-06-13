@@ -47,6 +47,8 @@ addons:
       - valgrind
       # To run the python tests.
       - python-nose
+      # To build API documentation.
+      - doxygen
 
 before_install:
 
@@ -103,8 +105,11 @@ install:
   - make -j$NPROC;
 
 script:
-  # Test OpenSim.
+  ## Run OpenSim C++ tests.
   - ctest -j8 --output-on-failure $CTEST_FLAGS
+  
+  ## Build doxygen documentation.
+  - make doxygen
 
   ## Print out valgrind output.
   - if [ $RUN_VALGRIND ]; then find Testing/Temporary -name "MemoryCheck*" -print | xargs cat; fi
