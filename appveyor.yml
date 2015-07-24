@@ -34,6 +34,7 @@ install:
 
   ## Use Chocolatey to install doxygen.
   - cinst doxygen.install
+  - cinst miktex
   
   ## Simbody.
   # Simbody's installation is pushed to our Appveyor NuGet account feed.
