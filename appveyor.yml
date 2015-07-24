@@ -61,4 +61,4 @@ deploy:
   username: a6488480
   password: abc123
   folder: public_html
-  artifact: CMakeCache.txt
+  artifact: C:\simbody
