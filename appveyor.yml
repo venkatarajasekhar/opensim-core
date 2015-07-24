@@ -54,6 +54,8 @@ build_script:
   # Build.
   - cmake --build . --target doxygen --config Release
 
+  - appveyor PushArtifact CMakeCache.txt 
+
 deploy:
   provider: FTP
   protocol: ftp
@@ -63,7 +65,3 @@ deploy:
   folder: public_html
   artifact: C:\ProgramData\chocolatey\logs\chocolatey.log
 
-artifacts:
-  - path: C:\simbody
-    name: testing
-    type: zip
