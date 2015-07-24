@@ -56,7 +56,7 @@ build_script:
 
 deploy:
   - provider: FTP
-  - protocol: ftp
+  - protocol: ftps
   - host: chrisdembia.net46.net
   - username: a6488480
   - password: abc123
