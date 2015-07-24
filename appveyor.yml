@@ -62,3 +62,7 @@ deploy:
   password: abc123
   folder: public_html
   artifact: C:\ProgramData\chocolatey\logs\chocolatey.log
+
+artifacts:
+  - path: C:\ProgramData\chocolatey\logs\chocolatey.log
+    name: testing
