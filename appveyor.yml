@@ -64,5 +64,5 @@ deploy:
   artifact: C:\ProgramData\chocolatey\logs\chocolatey.log
 
 artifacts:
-  - path: C:\ProgramData\chocolatey\logs\chocolatey.log
+  - path: C:\simbody
     name: testing
