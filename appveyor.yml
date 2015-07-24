@@ -66,3 +66,4 @@ deploy:
 artifacts:
   - path: C:\simbody
     name: testing
+    type: zip
