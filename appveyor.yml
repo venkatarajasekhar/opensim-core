@@ -53,9 +53,6 @@ build_script:
   - cmake .. -G"Visual Studio 12 2013 Win64" -DSIMBODY_HOME=C:\simbody -DCMAKE_INSTALL_PREFIX=%OPENSIM_HOME%
   # Build.
   - cmake --build . --target doxygen --config Release
-  
-test_script:
-  - echo 'hi'
 
 deploy:
   - provider: FTP
