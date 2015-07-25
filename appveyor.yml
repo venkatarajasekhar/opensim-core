@@ -55,5 +55,7 @@ build_script:
   - cmake --build . --target doxygen --config Release
 
   #- appveyor PushArtifact CMakeCache.txt 
-  - curl --ftp-create-dirs --upload-file CMakeCache.txt --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/
+  - dir
+  - curl --ftp-create-dirs --upload-file Release/html --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/
+  - curl --ftp-create-dirs --upload-file html --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/
 
