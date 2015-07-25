@@ -56,6 +56,6 @@ build_script:
 
   #- appveyor PushArtifact CMakeCache.txt 
   - dir
-  - curl --ftp-create-dirs --upload-file Release/html --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/
   - curl --ftp-create-dirs --upload-file html --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/
+  - curl --ftp-create-dirs --upload-file 'html/*' --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/
 
