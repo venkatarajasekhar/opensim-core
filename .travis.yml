@@ -45,6 +45,7 @@ addons:
       - valgrind
       # To run the python tests.
       - python-nose
+      - doxygen
 
 before_install:
 
