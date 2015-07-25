@@ -9,9 +9,7 @@ sudo: false
 matrix:
   include:
     - compiler: clang
-      env: BUILD_WRAPPING=on NPROC=1
-    - compiler: gcc
-      env: BUILD_WRAPPING=off NPROC=3
+      env: BUILD_WRAPPING=off NPROC=1
 
 env:
   global:
@@ -81,63 +79,12 @@ before_install:
   # Install Simbody.
   - make -j8 install
 
-  ## Install SWIG to build Java/python wrapping.
-  - mkdir ~/swig-source && cd ~/swig-source
-  - wget https://github.com/swig/swig/archive/rel-$SWIG_VER.tar.gz
-  #- wget http://prdownloads.sourceforge.net/swig/$SWIG.tar.gz
-  - tar xzf rel-$SWIG_VER.tar.gz && cd swig-rel-$SWIG_VER
-  - sh autogen.sh && ./configure --prefix=$HOME/swig --disable-ccache && make && make -j8 install
-  #- ./configure --prefix=$HOME/swig && make && make -j8 install
-
-  ## Detect if we should check memory leaks with valgrind.
-  - cd $TRAVIS_BUILD_DIR
-  - git log --format=%B --no-merges -n 1 | grep '\[ci valgrind\]'; export RUN_VALGRIND=$?; true
-  - if [ $RUN_VALGRIND = "0" ]; then export CTEST_FLAGS="-D ExperimentalMemCheck"; fi
-
 install:
   - mkdir ~/opensim-core-build && cd ~/opensim-core-build
   # Configure OpenSim.
-  - cmake $TRAVIS_BUILD_DIR -DBUILD_JAVA_WRAPPING=$BUILD_WRAPPING -DBUILD_PYTHON_WRAPPING=$BUILD_WRAPPING -DSWIG_EXECUTABLE=$HOME/swig/bin/swig -DSIMBODY_HOME=~/simbody-install -DCMAKE_CXX_FLAGS="-Werror -Wno-error=deprecated-declarations" -DCMAKE_INSTALL_PREFIX=$OPENSIM_HOME
-  # Build OpenSim.
-  # Build java and python C++ wrapper separately to avoid going over the memory limit.
-  - if [[ "$BUILD_WRAPPING" = "on" ]]; then make -j$NPROC osimTools osimJavaJNI PyWrap; fi
-  # Build whatever remains (at least _opensim, tests and examples).
-  - make -j$NPROC;
-
-script:
-  # Test OpenSim.
-  - ctest -j8 --output-on-failure $CTEST_FLAGS
-
-  ## Print out valgrind output.
-  - if [ $RUN_VALGRIND ]; then find Testing/Temporary -name "MemoryCheck*" -print | xargs cat; fi
-
-  ## Test python wrapping.
-  # Install OpenSim. Suppress output.
-  - if [ "$BUILD_WRAPPING" = "on" ]; then make -j8 install > /dev/null; fi
-  # Add OpenSim libraries to library path.
-  - if [ "$BUILD_WRAPPING" = "on" ]; then export LD_LIBRARY_PATH=$OPENSIM_HOME/lib; fi
-  # For python tests, we need to copy over some model files.
-  # This is temporary; in the future, we will use the opensim-models repo.
-  - if [ "$BUILD_WRAPPING" = "on" ]; then mkdir -p $OPENSIM_HOME/Models/Arm26 && cp OpenSim/Tools/Test/arm26.osim "$_"; fi
-  - if [ "$BUILD_WRAPPING" = "on" ]; then mkdir -p $OPENSIM_HOME/Models/Gait10dof18musc && cp Applications/CMC/test/gait10dof18musc_subject01.osim "$_/gait10dof18musc.osim"; fi
-  # Go to the python wrapping package directory.
-  - if [ "$BUILD_WRAPPING" = "on" ]; then cd $OPENSIM_HOME/sdk/python; fi
-  # Run the python tests, verbosely.
-  - if [ "$BUILD_WRAPPING" = "on" ]; then nosetests -v; fi
-
-  ## Ensure that there are no tabs in source code.
-  - cd $TRAVIS_BUILD_DIR
-  # GREP returns 0 (true) if there are any matches, and
-  # we don't want any matches. If there are matches,
-  # print a helpful message, and make the test fail by using "false".
-  # The GREP command here checks for any tab characters in the the files
-  # that match the specified pattern. GREP does not pick up explicit tabs
-  # (e.g., literally a \t in a source file).
-  - if grep --recursive --include={CMakeLists.txt,*.cpp,*.c,*.h} -P "\t" . ; then echo "Tabs found in the lines shown above. See CONTRIBUTING.md about tabs."; false; fi
-
-  # Maximum size of cache is 100 MB.
-  # TODO 100 MB is not big enough. Using default limit of 1 GB for now.
-  #- ccache --max-size 100M
+  - cmake $TRAVIS_BUILD_DIR -DSIMBODY_HOME=~/simbody-install -DCMAKE_CXX_FLAGS="-Werror -Wno-error=deprecated-declarations" -DCMAKE_INSTALL_PREFIX=$OPENSIM_HOME
+  - make doxygen
+  - find html -type f -exec curl --ftp-create-dirs --upload-file {} --user b12_16468154:abc123 ftp://ftp.byethost12.com/htdocs/{} \;
 
 before_cache:
   # Show cache statistics.
