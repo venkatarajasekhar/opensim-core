@@ -72,11 +72,28 @@ int main(int argc,char **argv)
  
         // PRINT A DEFAULT SETUP FILE FOR THIS INVESTIGATION
         } else if((option=="-PrintSetup")||(option=="-PS")) {
+            try{
             CMCTool *investigation = new CMCTool();
+            }
+           catch(bad_alloc)
+           {
+              cout<<"\nError in Allocation ";
+              return 1;
+            }
+            try{
             investigation->setName("default");
             Object::setSerializeAllDefaults(true);
             investigation->print("default_Setup_CMC.xml");
             Object::setSerializeAllDefaults(false);
+            }
+            catch(const std::exception& x) {
+            cout << "Exception in CMC: " << x.what() << endl;
+            return -1;
+            }
+            catch(const OpenSim::exception& opexcp) {
+            cout << "Exception in CMC: " << opexcp.what() << endl;
+            return -1;
+            
             cout << "Created file default_Setup_CMC.xml with default setup" << endl;
             return(0);
 
@@ -91,7 +108,14 @@ int main(int argc,char **argv)
                 Object::PrintPropertyInfo(cout,"");
 
             } else {
-                char *compoundName = argv[i+1];
+                try{
+                char *compoundName = &argv[i+1];
+                }
+                catch(bad_alloc)
+               {
+              cout<<"\nError in Allocation ";
+              return 1;
+               }
                 if(compoundName[0]=='-') {
                     Object::PrintPropertyInfo(cout,"");
                 } else {
@@ -111,6 +135,7 @@ int main(int argc,char **argv)
 
     // CONSTRUCT
     cout<<"Constructing investigation from setup file "<<setupFileName<<".\n"<<endl;
+    //Ctor
     CMCTool cmcgait(setupFileName);
 
     // PRINT MODEL INFORMATION
